@@ -1,0 +1,262 @@
+/*
+ * The PDF viewer of the pdf_viewer plugin, under the file of the download page.
+ * PDF.js draws the pages with its own pdf_viewer.css, this file draws the box around them and the toolbar,
+ * in the colors, font and corners of the style: the variables of Bootstrap 5, light and dark,
+ * then those of the default style of Kleeja, then values of their own
+ */
+
+.kj-pdf {
+    --kj-pdf-bg: var(--bs-body-bg, #fff);
+    --kj-pdf-color: var(--bs-body-color, var(--text, #212529));
+    --kj-pdf-muted: var(--bs-secondary-color, var(--text-muted, #6c757d));
+    --kj-pdf-border: var(--bs-border-color, var(--gray-200, #dee2e6));
+    --kj-pdf-toolbar-bg: var(--bs-tertiary-bg, var(--gray-50, #f8f9fa));
+    --kj-pdf-stage-bg: var(--bs-secondary-bg, var(--gray-150, #e9ecef));
+    --kj-pdf-hover: rgba(var(--bs-emphasis-color-rgb, 0, 0, 0), 0.08);
+    --kj-pdf-focus: var(--bs-primary, var(--focus, #0d6efd));
+    --kj-pdf-font: var(--bs-body-font-family, var(--font, system-ui, sans-serif));
+    --kj-pdf-radius: var(--bs-border-radius-lg, var(--radius-lg, 0.5rem));
+    --kj-pdf-radius-sm: var(--bs-border-radius, var(--radius, 0.375rem));
+    margin-top: 1.5rem;
+}
+
+.kj-pdf-box {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    color: var(--kj-pdf-color);
+    background: var(--kj-pdf-bg);
+    border: 1px solid var(--kj-pdf-border);
+    border-radius: var(--kj-pdf-radius);
+    box-shadow: var(--bs-box-shadow-sm, 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075));
+    font-family: var(--kj-pdf-font);
+}
+
+.kj-pdf-box:fullscreen {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    border-radius: 0;
+}
+
+/* the toolbar, its groups wrap on small screens */
+
+.kj-pdf-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: var(--kj-pdf-toolbar-bg);
+    border-bottom: 1px solid var(--kj-pdf-border);
+}
+
+.kj-pdf-group {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.kj-pdf-group[hidden] {
+    display: none;
+}
+
+.kj-pdf-btn {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    padding: 0;
+    color: inherit;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--kj-pdf-radius-sm);
+    font-size: 0.9375rem;
+    line-height: 1;
+    cursor: pointer;
+    transition:
+        background-color 0.15s ease-in-out,
+        border-color 0.15s ease-in-out;
+}
+
+.kj-pdf-btn:hover:not(:disabled),
+.kj-pdf-btn[aria-pressed="true"] {
+    background: var(--kj-pdf-hover);
+}
+
+.kj-pdf-btn:disabled {
+    opacity: 0.45;
+    cursor: default;
+}
+
+.kj-pdf-pages {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    margin-inline-start: 0.25rem;
+    color: var(--kj-pdf-muted);
+    font-size: 0.875rem;
+    white-space: nowrap;
+}
+
+.kj-pdf-input,
+.kj-pdf-select {
+    height: 2.25rem;
+    margin: 0;
+    padding: 0 0.5rem;
+    color: var(--kj-pdf-color);
+    background-color: var(--kj-pdf-bg);
+    border: 1px solid var(--kj-pdf-border);
+    border-radius: var(--kj-pdf-radius-sm);
+    font-family: inherit;
+    font-size: 0.875rem;
+}
+
+.kj-pdf-input {
+    width: 3.75rem;
+    text-align: center;
+    appearance: textfield;
+}
+
+.kj-pdf-input::-webkit-inner-spin-button,
+.kj-pdf-input::-webkit-outer-spin-button {
+    margin: 0;
+    appearance: none;
+}
+
+.kj-pdf-select {
+    max-width: 10.5rem;
+    cursor: pointer;
+}
+
+.kj-pdf-input:disabled,
+.kj-pdf-select:disabled {
+    opacity: 0.65;
+    cursor: default;
+}
+
+.kj-pdf-btn:focus-visible,
+.kj-pdf-input:focus-visible,
+.kj-pdf-select:focus-visible,
+.kj-pdf-container:focus-visible {
+    outline: 2px solid var(--kj-pdf-focus);
+    outline-offset: -2px;
+}
+
+/* the pages, PDF.js wants their container absolutely positioned, so the stage gives it its size,
+   about the shape of a page on wide screens, and most of the screen on phones */
+
+.kj-pdf-stage {
+    position: relative;
+    height: min(80vh, 60rem);
+    min-height: 22rem;
+    background: var(--kj-pdf-stage-bg);
+}
+
+.kj-pdf-box:fullscreen .kj-pdf-stage {
+    flex: 1;
+    height: auto;
+    min-height: 0;
+}
+
+/* the pages are the document, not the page around them, so they scroll the same way in both directions */
+.kj-pdf-container {
+    position: absolute;
+    inset: 0;
+    overflow: auto;
+    direction: ltr;
+}
+
+/* presentation mode, one page on black */
+.kj-pdf-stage:fullscreen {
+    height: 100%;
+    min-height: 0;
+    background: #000;
+}
+
+.kj-pdf-stage:fullscreen .kj-pdf-container {
+    overflow: hidden;
+}
+
+/* the message while the file loads, or when it can't be shown */
+
+.kj-pdf-status {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 1.5rem;
+    color: var(--kj-pdf-muted);
+    background: var(--kj-pdf-stage-bg);
+    text-align: center;
+}
+
+.kj-pdf-status[hidden] {
+    display: none;
+}
+
+.kj-pdf-spinner {
+    width: 2rem;
+    height: 2rem;
+    border: 0.25em solid currentcolor;
+    border-inline-end-color: transparent;
+    border-radius: 50%;
+    animation: kj-pdf-spin 0.75s linear infinite;
+}
+
+@keyframes kj-pdf-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .kj-pdf-spinner {
+        animation-duration: 1.5s;
+    }
+}
+
+.kj-pdf-icon {
+    display: none;
+    font-size: 2rem;
+    opacity: 0.6;
+}
+
+.kj-pdf.is-failed .kj-pdf-toolbar,
+.kj-pdf.is-failed .kj-pdf-container,
+.kj-pdf.is-failed .kj-pdf-spinner {
+    display: none;
+}
+
+.kj-pdf.is-failed .kj-pdf-icon {
+    display: block;
+}
+
+.kj-pdf.is-failed .kj-pdf-stage {
+    height: auto;
+    min-height: 10rem;
+}
+
+@media (max-width: 575.98px) {
+    .kj-pdf-stage {
+        height: 75vh;
+        min-height: 18rem;
+    }
+
+    .kj-pdf-toolbar {
+        justify-content: center;
+        padding-inline: 0.5rem;
+    }
+}
+
+@media print {
+    .kj-pdf {
+        display: none;
+    }
+}
